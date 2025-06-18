@@ -3,7 +3,6 @@ package campaign
 import (
 	"testing"
 	"time"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,18 +16,7 @@ func TestNewCampaign(t *testing.T) {
 	contact := []string{"email@e.com", "email2@e.com"}
 
 	//Criação da campanha: ACT
-	campaign := NewCampaign(name, content, contact)
-
-	//Verifica se as variaveis está correto (esperado dados de entrada simulado)
-	// if campaign.ID != "1" {
-	// 	t.Errorf("Expected ID")
-	// } else if campaign.Name != name {
-	// 	t.Errorf("Expected correct name")
-	// } else if campaign.Content != content {
-	// 	t.Errorf("Expected correct c")
-	// } else if len(campaign.Contact) != len(contact) {
-	// 	t.Errorf("Expected correct Email")
-	// }
+	campaign, _ := NewCampaign(name, content, contact)
 
 	//Testify Para simplificar a verificação acima: Assert
 	
@@ -51,7 +39,7 @@ func Test_IDIsNotNill(t *testing.T){
 	content := "Body"
 	contact := []string{"email@e.com", "email2@e.com"}
 
-	campaign := NewCampaign(name, content, contact)
+	campaign, _ := NewCampaign(name, content, contact)
 
 	//Assert: Verifica se o ID foi atribuído corretamente
 	assert.NotNil(campaign.ID)
@@ -71,8 +59,49 @@ func Test_CreateOnIsNotNill(t *testing.T){
 	contact := []string{"email@e.com", "email2@e.com"}
 	now := time.Now().Add(-time.Minute)//Define um tempo de referência, um minuto antes de agora
 
-	campaign := NewCampaign(name, content, contact)
+	campaign, _ := NewCampaign(name, content, contact)
 
 	// Assert: Verifica se CreateOn é posterior ao tempo de referência
 	assert.Greater(campaign.CreateOn, now)
 }
+
+
+// Validação de Dominio ////////////////////////////
+func Test_ValidateName(t *testing.T){
+	
+	assert := assert.New(t)
+
+	name := ""
+	content := "Body"
+	contact := []string{"email@e.com", "email2@e.com"}
+	
+	_, err := NewCampaign(name, content, contact)
+	
+	// Assert: Verifica se a Variavel está retornando vazio atravez de campaign.go.
+	assert.Equal("name is required", err.Error())
+}
+
+func Test_ValidateContent(t *testing.T){
+	
+	assert := assert.New(t)
+
+	name := "CampaignX"
+	content := ""
+	contact := []string{"email@e.com", "email2@e.com"}
+	
+	_, err := NewCampaign(name, content, contact)
+	assert.Equal("content is required", err.Error())
+}
+func Test_ValidateContact(t *testing.T){
+	
+	assert := assert.New(t)
+
+	name := "CampaignX"
+	content := "Body"
+	contact := []string{}
+	
+	_, err := NewCampaign(name, content, contact)
+	assert.Equal("contact is required", err.Error())
+}
+
+//Obs.: Preciso de otimizar a leitura... está muito estranho.

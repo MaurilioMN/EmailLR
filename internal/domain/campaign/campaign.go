@@ -1,6 +1,7 @@
 package campaign
 
 import (
+	"errors"
 	"time"
 
 	"github.com/rs/xid"
@@ -21,7 +22,16 @@ type Campaign struct {
 }
 
 // Função para criar uma nova campanha
-func NewCampaign(name string, content string, emails []string) *Campaign {
+func NewCampaign(name string, content string, emails []string) (*Campaign, error) {
+
+	// Validação de dominio No campaign_test.go
+	if name == "" {
+		return nil, errors.New("name is required")
+	} else if content == "" {
+		return nil, errors.New("content is required")
+	} else if len(emails) == 0 {
+		return nil, errors.New("contact is required")
+	}
 
 	contact := make([]Contact, len(emails))
 	for index, emails := range emails {
@@ -34,5 +44,5 @@ func NewCampaign(name string, content string, emails []string) *Campaign {
 		Content:  content,
 		CreateOn: time.Now(),
 		Contact:  contact,
-	}
+	}, nil
 }
