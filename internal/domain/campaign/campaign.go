@@ -24,7 +24,7 @@ type Campaign struct {
 // Função para criar uma nova campanha
 func NewCampaign(name string, content string, emails []string) (*Campaign, error) {
 
-	// Validação de dominio No campaign_test.go
+	// Validação de dominio No campaign_test.gos
 	if name == "" {
 		return nil, errors.New("name is required")
 	} else if content == "" {

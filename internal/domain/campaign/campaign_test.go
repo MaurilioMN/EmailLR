@@ -3,6 +3,7 @@ package campaign
 import (
 	"testing"
 	"time"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,18 +20,17 @@ func TestNewCampaign(t *testing.T) {
 	campaign, _ := NewCampaign(name, content, contact)
 
 	//Testify Para simplificar a verificação acima: Assert
-	
+
 	assert.Equal(campaign.Name, name)
 	assert.Equal(campaign.Content, content)
 	assert.Equal(len(campaign.Contact), len(contact))
 }
 
-
 // Test_IDIsNotNill verifica se o campo ID da campanha é preenchido corretamente
 // após a criação de uma nova instância da campanha.
 // O objetivo é garantir que o ID não seja nulo após a inicialização.
-func Test_IDIsNotNill(t *testing.T){
-	
+func Test_IDIsNotNill(t *testing.T) {
+
 	// Cria uma instância do pacote de assertions do testify
 	assert := assert.New(t)
 
@@ -48,8 +48,8 @@ func Test_IDIsNotNill(t *testing.T){
 // Test_CreateOnIsNotNill verifica se o campo CreateOn é atribuído com uma data válida
 // e se ele representa um momento posterior a um tempo de referência definido
 // (um minuto antes da criação da campanha).
-func Test_CreateOnIsNotNill(t *testing.T){
-	
+func Test_CreateOnIsNotNill(t *testing.T) {
+
 	// Cria uma instância do pacote de assertions do testify
 	assert := assert.New(t)
 
@@ -57,7 +57,7 @@ func Test_CreateOnIsNotNill(t *testing.T){
 	name := "CampaignX"
 	content := "Body"
 	contact := []string{"email@e.com", "email2@e.com"}
-	now := time.Now().Add(-time.Minute)//Define um tempo de referência, um minuto antes de agora
+	now := time.Now().Add(-time.Minute) //Define um tempo de referência, um minuto antes de agora
 
 	campaign, _ := NewCampaign(name, content, contact)
 
@@ -65,41 +65,40 @@ func Test_CreateOnIsNotNill(t *testing.T){
 	assert.Greater(campaign.CreateOn, now)
 }
 
-
 // Validação de Dominio ////////////////////////////
-func Test_ValidateName(t *testing.T){
-	
+func Test_ValidateName(t *testing.T) {
+
 	assert := assert.New(t)
 
 	name := ""
 	content := "Body"
 	contact := []string{"email@e.com", "email2@e.com"}
-	
+
 	_, err := NewCampaign(name, content, contact)
-	
+
 	// Assert: Verifica se a Variavel está retornando vazio atravez de campaign.go.
 	assert.Equal("name is required", err.Error())
 }
 
-func Test_ValidateContent(t *testing.T){
-	
+func Test_ValidateContent(t *testing.T) {
+
 	assert := assert.New(t)
 
 	name := "CampaignX"
 	content := ""
 	contact := []string{"email@e.com", "email2@e.com"}
-	
+
 	_, err := NewCampaign(name, content, contact)
 	assert.Equal("content is required", err.Error())
 }
-func Test_ValidateContact(t *testing.T){
-	
+func Test_ValidateContact(t *testing.T) {
+
 	assert := assert.New(t)
 
 	name := "CampaignX"
 	content := "Body"
 	contact := []string{}
-	
+
 	_, err := NewCampaign(name, content, contact)
 	assert.Equal("contact is required", err.Error())
 }
