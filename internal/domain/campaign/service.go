@@ -2,7 +2,6 @@ package campaign
 
 import (
 	"campaing/internal/contract"
-
 )
 
 type Service struct {
@@ -12,9 +11,16 @@ type Service struct {
 // Create e o New campaign Precisam ter as assinaturas respectivamente.
 func (s *Service) Create(newCampaign contract.NewCampaign) (string, error) {
 
-	// Service_test.go Ln46 - respectivamente
-	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Email)
-	s.Repository.Save(campaign)
+	// Service_test.go (Func Test_SaveRepository - respectivamente)
+	campaign, err := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Email)
+	if err != nil{
+		return "", err
+	} 
+
+	err = s.Repository.Save(campaign)
+	if err != nil{
+		return "", err
+	}
 
 	return campaign.ID, nil
 }

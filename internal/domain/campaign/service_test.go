@@ -2,6 +2,7 @@ package campaign
 
 import (
 	"campaing/internal/contract"
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -62,4 +63,25 @@ func Test_SaveRepository(t *testing.T) {
 	service.Create(newCampaign)
 
 	repoMock.AssertExpectations(t)
+}
+
+func Test_CreateValidateDomainErr(t *testing.T) {
+	assert := assert.New(t)
+	newCampaign.Name = ""
+
+	_, err := service.Create(newCampaign)
+
+	assert.NotNil(err)
+	assert.Equal("name is required", err.Error())
+
+}
+
+func Test_ValideteRepository(t *testing.T) {
+	assert := assert.New(t)
+	repoMock.On("Save", mock.Anything).Return(errors.New("Error to save database"))
+	service.Repository = repoMock
+
+	_, err := service.Create(newCampaign)
+
+	assert.Equal("Error to save database", err.Error())
 }
