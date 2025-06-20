@@ -1,7 +1,6 @@
 package campaign
 
 import (
-	"errors"
 	"time"
 
 	"github.com/rs/xid"
@@ -9,29 +8,22 @@ import (
 
 // Definição do tipo Contact
 type Contact struct {
-	Email string
+	Email string `validade:"email"`
 }
 
 // Definição do tipo Campaign
 type Campaign struct {
-	ID       string
-	Name     string
-	CreateOn time.Time
-	Content  string
-	Contact  []Contact
+
+	//Validação de Struct para validar requisiçoes.
+	ID       string    `validate:"required"`
+	Name     string    `validade:"min=5,max=24"`
+	CreateOn time.Time `validate:"required"`
+	Content  string    `validate:"min=5,max=1024"`
+	Contact  []Contact `validate:"min=1,dive"`
 }
 
 // Função para criar uma nova campanha
 func NewCampaign(name string, content string, emails []string) (*Campaign, error) {
-
-	// Validação de dominio No campaign_test.gos
-	if name == "" {
-		return nil, errors.New("name is required")
-	} else if content == "" {
-		return nil, errors.New("content is required")
-	} else if len(emails) == 0 {
-		return nil, errors.New("contact is required")
-	}
 
 	contact := make([]Contact, len(emails))
 	for index, emails := range emails {

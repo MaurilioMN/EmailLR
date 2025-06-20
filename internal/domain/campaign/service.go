@@ -2,8 +2,10 @@ package campaign
 
 import (
 	"campaing/internal/contract"
+	"campaing/internal/internalErrors"
 )
 
+//Essa areas é responsavel por criar Novas campanhas.
 type Service struct {
 	Repository Repository
 }
@@ -16,10 +18,11 @@ func (s *Service) Create(newCampaign contract.NewCampaign) (string, error) {
 	if err != nil{
 		return "", err
 	} 
-
+	//Esse erro aparecerá quando estiver com problemas na conexão com o Repositorio o Banco de dados.
 	err = s.Repository.Save(campaign)
 	if err != nil{
-		return "", err
+		//Mascarando o err para evitar problemas.
+		return "", internalerrors.Errinternal
 	}
 
 	return campaign.ID, nil

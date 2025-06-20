@@ -2,6 +2,7 @@ package campaign
 
 import (
 	"campaing/internal/contract"
+	internalerrors "campaing/internal/internalErrors"
 	"errors"
 	"testing"
 
@@ -83,5 +84,5 @@ func Test_ValideteRepository(t *testing.T) {
 
 	_, err := service.Create(newCampaign)
 
-	assert.Equal("Error to save database", err.Error())
+	assert.True(errors.Is(internalerrors.Errinternal, err))
 }
