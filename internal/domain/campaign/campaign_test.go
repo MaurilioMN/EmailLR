@@ -35,11 +35,11 @@ func Test_IDIsNotNill(t *testing.T) {
 	assert := assert.New(t)
 
 	// Dados de entrada simulados: Arrange
-	name := "CampaignX"
-	content := "Body"
-	contact := []string{"email@e.com", "email2@e.com"}
+	Invalname := "CampaignX"
+	Invacontent := "Body"
+	Invacontact := []string{"email@e.com", "email2@e.com"}
 
-	campaign, _ := NewCampaign(name, content, contact)
+	campaign, _ := NewCampaign(Invalname, Invacontent, Invacontact)
 
 	//Assert: Verifica se o ID foi atribuído corretamente
 	assert.NotNil(campaign.ID)
@@ -66,21 +66,35 @@ func Test_CreateOnIsNotNill(t *testing.T) {
 }
 
 // Validação de Dominio ////////////////////////////
-func Test_ValidateName(t *testing.T) {
+func Test_ValidateNameMin(t *testing.T) {
 
 	assert := assert.New(t)
 
 	name := ""
-	content := "Body"
+	content := "Body1"
 	contact := []string{"email@e.com", "email2@e.com"}
 
 	_, err := NewCampaign(name, content, contact)
 
 	// Assert: Verifica se a Variavel está retornando vazio atravez de campaign.go.
-	assert.Equal("name is required", err.Error())
+	assert.Equal("name is required with min 5", err.Error())
 }
 
-func Test_ValidateContent(t *testing.T) {
+func Test_ValidateNameMax(t *testing.T) {
+
+	assert := assert.New(t)
+
+	name := "1111111111111111111111111111111111111111111"
+	content := "Body1"
+	contact := []string{"email@e.com", "email2@e.com"}
+
+	_, err := NewCampaign(name, content, contact)
+
+	// Assert: Verifica se a Variavel está retornando vazio atravez de campaign.go.
+	assert.Equal("name is required with max 24", err.Error())
+}
+
+func Test_ValidateContentMin(t *testing.T) {
 
 	assert := assert.New(t)
 
@@ -89,18 +103,31 @@ func Test_ValidateContent(t *testing.T) {
 	contact := []string{"email@e.com", "email2@e.com"}
 
 	_, err := NewCampaign(name, content, contact)
-	assert.Equal("content is required", err.Error())
+	assert.Equal("content is required with min 5", err.Error())
 }
+
+func Test_ValidateContentMax(t *testing.T) {
+
+	assert := assert.New(t)
+
+	name := "CampaignX"
+	content := ""
+	contact := []string{"email@e.com", "email2@e.com"}
+
+	_, err := NewCampaign(name, content, contact)
+	assert.Equal("content is required with min 5", err.Error())
+}
+
 func Test_ValidateContact(t *testing.T) {
 
 	assert := assert.New(t)
 
 	name := "CampaignX"
-	content := "Body"
+	content := "Body1"
 	contact := []string{}
 
 	_, err := NewCampaign(name, content, contact)
-	assert.Equal("contact is required", err.Error())
+	assert.Equal("contact is required with min 1", err.Error())
 }
 
 //Obs.: Preciso de otimizar a leitura... está muito estranho.

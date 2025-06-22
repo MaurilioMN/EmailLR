@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	contact := []campaign.Contact{{Email:""}, {Email:""}}
+	contact := []campaign.Contact{{Email: ""}, {Email: ""}}
 	campaign := campaign.Campaign{Contact: contact}
 	validate := validator.New()
 	err := validate.Struct(campaign)
@@ -17,13 +17,13 @@ func main() {
 	} else {
 		validationErrors := err.(validator.ValidationErrors)
 		for _, v := range validationErrors {
-			switch v.Tag(){
+			switch v.Tag() {
 			case "required":
-				println(v.StructField() + " is required")
+				println(v.StructField() + " is required with min " + v.Param())
 			case "min":
-				println(v.StructField() + " is required with min" + v.Param())
+				println(v.StructField() + " is required with min")
 			case "max":
-				println(v.StructField() + " is required with max" + v.Param())
+				println(v.StructField() + " is required with max")
 			case "email":
 				println(v.StructField() + " is invalid!")
 			}
