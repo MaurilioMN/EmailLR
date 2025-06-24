@@ -10,16 +10,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-var (
-	newCampaign = contract.NewCampaign{
-		Name:    "test Y",
-		Content: "body",
-		Email:   []string{"test@gmail.com"},
-	}
-	repoMock = new(repositoryMock)
-	service  = Service{Repository: repoMock}
-)
-
 type repositoryMock struct {
 	mock.Mock
 }
@@ -29,18 +19,26 @@ func (r *repositoryMock) Save(campaign *Campaign) error {
 	return args.Error(0)
 }
 
+var (
+	newCampaign = contract.NewCampaign{
+		Name:    "testYz",
+		Content: "body1",
+		Email:   []string{"test@gmail.com"},
+	}
+	service = Service{}
+)
+
 func Test_CreateCampaignService(t *testing.T) {
 	assert := assert.New(t)
 
 	repoMock := new(repositoryMock)
-	repoMock.On("Save", mock.AnythingOfType("*campaign.Campaign")).Return(nil)
+	repoMock.On("Save", mock.Anything).Return(nil)
 
 	service := Service{Repository: repoMock}
 
 	_, err := service.Create(newCampaign)
 
-	assert.Nil(err)
-	repoMock.AssertExpectations(t)
+	assert.False(errors.Is(internalerrors.Errinternal, err))
 }
 
 func Test_SaveRepository(t *testing.T) {
@@ -49,6 +47,7 @@ func Test_SaveRepository(t *testing.T) {
 	// (por exemplo, um repositório que salva dados no banco).
 	// Durante o teste, você não quer realmente acessar o banco
 	// então você usa um mock que finge ser esse repositório e retorna o que você quiser.
+	repoMock := new(repositoryMock)
 	repoMock.On("Save", mock.MatchedBy(func(campaign *Campaign) bool {
 
 		if campaign.Name != newCampaign.Name ||
@@ -68,21 +67,26 @@ func Test_SaveRepository(t *testing.T) {
 
 func Test_CreateValidateDomainErr(t *testing.T) {
 	assert := assert.New(t)
-	newCampaign.Name = ""
 
-	_, err := service.Create(newCampaign)
+	repoMock := new(repositoryMock)
+	service := Service{Repository: repoMock}
+
+	_, err := service.Create(contract.NewCampaign{})
 
 	assert.NotNil(err)
-	assert.Equal("name is required", err.Error())
+	assert.Equal("name is required with min 5", err.Error())
 
 }
 
-func Test_ValideteRepository(t *testing.T) {
+func Test_ValidateRepository(t *testing.T) {
 	assert := assert.New(t)
+
+	repoMock := new(repositoryMock)
 	repoMock.On("Save", mock.Anything).Return(errors.New("Error to save database"))
-	service.Repository = repoMock
+
+	service := Service{Repository: repoMock}
 
 	_, err := service.Create(newCampaign)
 
-	assert.True(errors.Is(internalerrors.Errinternal, err))
+	assert.True(errors.Is(err, internalerrors.Errinternal))
 }

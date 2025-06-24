@@ -13,7 +13,7 @@ func TestNewCampaign(t *testing.T) {
 
 	// Dados de entrada simulados: Arrange
 	name := "CampaignX"
-	content := "Body"
+	content := "Body1"
 	contact := []string{"email@e.com", "email2@e.com"}
 
 	//Criação da campanha: ACT
@@ -36,7 +36,7 @@ func Test_IDIsNotNill(t *testing.T) {
 
 	// Dados de entrada simulados: Arrange
 	Invalname := "CampaignX"
-	Invacontent := "Body"
+	Invacontent := "Body1"
 	Invacontact := []string{"email@e.com", "email2@e.com"}
 
 	campaign, _ := NewCampaign(Invalname, Invacontent, Invacontact)
@@ -55,7 +55,7 @@ func Test_CreateOnIsNotNill(t *testing.T) {
 
 	// Dados de entrada simulados: Arrange
 	name := "CampaignX"
-	content := "Body"
+	content := "Body1"
 	contact := []string{"email@e.com", "email2@e.com"}
 	now := time.Now().Add(-time.Minute) //Define um tempo de referência, um minuto antes de agora
 
