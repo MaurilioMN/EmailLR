@@ -20,7 +20,7 @@ func (r *repositoryMock) Save(campaign *Campaign) error {
 }
 
 var (
-	newCampaign = contract.NewCampaign{
+	newCampaign = contract.NewCampaignDto{
 		Name:    "testYz",
 		Content: "body1",
 		Email:   []string{"test@gmail.com"},
@@ -71,7 +71,7 @@ func Test_CreateValidateDomainErr(t *testing.T) {
 	repoMock := new(repositoryMock)
 	service := Service{Repository: repoMock}
 
-	_, err := service.Create(contract.NewCampaign{})
+	_, err := service.Create(contract.NewCampaignDto{})
 
 	assert.NotNil(err)
 	assert.Equal("name is required with min 5", err.Error())

@@ -27,8 +27,8 @@ type Campaign struct {
 func NewCampaign(name string, content string, emails []string) (*Campaign, error) {
 
 	contact := make([]Contact, len(emails))
-	for index, emails := range emails {
-		contact[index].Email = emails
+	for index, email := range emails {
+		contact[index].Email = email
 	}
 
 	campaign := &Campaign{

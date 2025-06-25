@@ -1,7 +1,7 @@
 package contract
 
-type NewCampaign struct {
-	Name    string
-	Content string
-	Email   []string
+type NewCampaignDto struct {
+	Name    string   `json:"name"`
+	Content string   `json:"content"`
+	Email   []string `json:"email"`
 }

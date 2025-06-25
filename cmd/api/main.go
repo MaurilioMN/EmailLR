@@ -1,49 +1,72 @@
 package main
 
 import (
+	"campaing/internal/contract"
+	"campaing/internal/domain/campaign"
+	"campaing/internal/infraestrutura/database"
+	internalerrors "campaing/internal/internalErrors"
+	"errors"
 	"net/http"
 
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 )
 
-type product struct {
-	ID   int
-	Name string
-}
-
 // Utilizando o FrameWork GO-Chi para rotas web para essa Api
 func main() {
 	r := chi.NewRouter()
-	//Localhost:3000/?Name=name&id=5
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		Name := r.URL.Query().Get("name")
-		id := r.URL.Query().Get("id")
-		w.Write([]byte(Name + id))
-	})
 
-	//Localhost:3000/Product
-	r.Get("/{Rota}", func(w http.ResponseWriter, r *http.Request) {
-		param := chi.URLParam(r, "Rota")
-		w.Write([]byte(param))
-	})
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 
-	//Localhost:3000/json
-	r.Get("/json", func(w http.ResponseWriter, r *http.Request) {
-		//Cria uma Lista e converte para retorna json com o go-chi/render
-		obj := map[string]string{"mensagem": "sucesso"}
-		render.JSON(w, r, obj)
-	})
+	service := campaign.Service{
+		Repository: &database.CampaignRepository{},
+	}
+
+	//Localhost:3000/
+	r.Post("/Campaign", func(w http.ResponseWriter, r *http.Request) {
+
+		var request contract.NewCampaignDto
+		render.DecodeJSON(r.Body, &request)
+		id, err := service.Create(request)
+
+		if err != nil {
+
+			if errors.Is(err, internalerrors.Errinternal) {
+				render.Status(r, 500)
+				render.JSON(w, r, map[string]string{"error": err.Error()})
+				return
+			}else{
+				render.Status(r, 400)
+				render.JSON(w, r, map[string]string{"id": id})
+				return
+			}
 
 
-	//Localhost:3000/product
-	r.Post("/json", func(w http.ResponseWriter, r *http.Request) {
-		var product product
-		render.DecodeJSON(r.Body, &product)
-		product.ID = 5
-		render.JSON(w, r, product)
+		}
+
+
+		render.Status(r, 201)
+		render.JSON(w, r, map[string]string{"id": id})
 	})
 
 	//Localhost:Porta/
 	http.ListenAndServe(":3000", r)
 }
+
+//MiddleWares:
+// Um middleware é uma função intermediária que é executada
+// entre a requisição do cliente e a resposta do servidor.
+
+// func myMiddleware(next http.Handler) http.Handler {
+
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		println("Antes")
+// 		next.ServeHTTP(w, r)
+// 		println("depois")
+// 	})
+
+// }
