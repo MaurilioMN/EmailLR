@@ -17,11 +17,11 @@ func HandlerError(endpointFunc EndpointFunc) http.HandlerFunc {
 
 			if errors.Is(err, internalerrors.Errinternal) {
 				render.Status(r, 500)
-				return
 			} else {
 				render.Status(r, 400)
-				return
 			}
+			render.JSON(w, r, map[string]string{"error": err.Error()})
+			return
 		}
 		render.Status(r, status)
 		if obj != nil {
