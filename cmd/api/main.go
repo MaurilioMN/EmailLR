@@ -28,8 +28,8 @@ func main() {
 	}
 
 	//Localhost:3000/Campaign
-	r.Post("/Campaign", handler.CampaignPost)
-	r.Get("/Campaign", handler.CampaignGet)
+	r.Post("/Campaign", endpoint.HandlerError(handler.CampaignPost))
+	r.Get("/Campaign", endpoint.HandlerError(handler.CampaignGet))
 
 	//Localhost:Porta/
 	http.ListenAndServe(":3000", r)
