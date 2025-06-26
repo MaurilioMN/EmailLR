@@ -1,16 +1,13 @@
 package main
 
 import (
-	"campaing/internal/contract"
 	"campaing/internal/domain/campaign"
+	"campaing/internal/endpoint"
 	"campaing/internal/infraestrutura/database"
-	internalerrors "campaing/internal/internalErrors"
-	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/render"
 )
 
 // Utilizando o FrameWork GO-Chi para rotas web para essa Api
@@ -22,36 +19,17 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	service := campaign.Service{
+	campaignService := campaign.Service{
 		Repository: &database.CampaignRepository{},
 	}
 
-	//Localhost:3000/
-	r.Post("/Campaign", func(w http.ResponseWriter, r *http.Request) {
+	handler := endpoint.Handler{
+		CampaignService: campaignService,
+	}
 
-		var request contract.NewCampaignDto
-		render.DecodeJSON(r.Body, &request)
-		id, err := service.Create(request)
-
-		if err != nil {
-
-			if errors.Is(err, internalerrors.Errinternal) {
-				render.Status(r, 500)
-				render.JSON(w, r, map[string]string{"error": err.Error()})
-				return
-			}else{
-				render.Status(r, 400)
-				render.JSON(w, r, map[string]string{"id": id})
-				return
-			}
-
-
-		}
-
-
-		render.Status(r, 201)
-		render.JSON(w, r, map[string]string{"id": id})
-	})
+	//Localhost:3000/Campaign
+	r.Post("/Campaign", handler.CampaignPost)
+	r.Get("/Campaign", handler.CampaignGet)
 
 	//Localhost:Porta/
 	http.ListenAndServe(":3000", r)
