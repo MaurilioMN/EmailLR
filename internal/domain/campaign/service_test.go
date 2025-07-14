@@ -30,7 +30,7 @@ var (
 		Content: "body1",
 		Email:   []string{"test@gmail.com"},
 	}
-	service = Service{}
+	service = ServiceImp{}
 )
 
 func Test_CreateCampaignService(t *testing.T) {
@@ -39,7 +39,7 @@ func Test_CreateCampaignService(t *testing.T) {
 	repoMock := new(repositoryMock)
 	repoMock.On("Save", mock.Anything).Return(nil)
 
-	service := Service{Repository: repoMock}
+	service.Repository =repoMock
 
 	_, err := service.Create(newCampaign)
 
@@ -74,7 +74,7 @@ func Test_CreateValidateDomainErr(t *testing.T) {
 	assert := assert.New(t)
 
 	repoMock := new(repositoryMock)
-	service := Service{Repository: repoMock}
+	service.Repository =repoMock
 
 	_, err := service.Create(contract.NewCampaignDto{})
 
@@ -89,7 +89,7 @@ func Test_ValidateRepository(t *testing.T) {
 	repoMock := new(repositoryMock)
 	repoMock.On("Save", mock.Anything).Return(errors.New("Error to save database"))
 
-	service := Service{Repository: repoMock}
+	service.Repository =repoMock
 
 	_, err := service.Create(newCampaign)
 

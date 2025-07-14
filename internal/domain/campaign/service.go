@@ -5,13 +5,17 @@ import (
 	"campaing/internal/internalErrors"
 )
 
+type Service interface{
+	Create(newCampaign contract.NewCampaignDto) (string, error)
+}
+
 //Essa areas é responsavel por criar Novas campanhas.
-type Service struct {
+type ServiceImp struct {
 	Repository Repository
 }
 
 // Create e o New campaign Precisam ter as assinaturas respectivamente.
-func (s *Service) Create(newCampaign contract.NewCampaignDto) (string, error) {
+func (s *ServiceImp) Create(newCampaign contract.NewCampaignDto) (string, error) {
 
 	// Service_test.go (Func Test_SaveRepository - respectivamente)
 	campaign, err := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Email)
